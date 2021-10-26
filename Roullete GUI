@@ -1,0 +1,398 @@
+package com.company;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Objects;
+import java.util.Random;
+
+public class Main extends JFrame {
+    private static JButton roulette;
+    private static JTextArea preciseNumberBet;
+    private static JLabel outcome;
+    private static JLabel result;
+    private static int rolledNumber;
+    private static JLabel placedBet;
+    private static JLabel credits;
+    private static int balance=500;
+    private static int bet=0;
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame();
+        frame.setSize(800,650);
+        frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel panel = new JPanel();
+        frame.add(panel);
+        frame.setTitle("Roulette");
+        panel.setLayout(null);
+
+        Font font = new Font(Font.SANS_SERIF, Font.BOLD, 22);
+
+        roulette = new JButton();
+        roulette.setBounds(350,500,75,75);
+        roulette.setFont(font);
+        panel.add(roulette);
+        JLabel thirds = new JLabel("3x");
+        thirds.setFont(font);
+        thirds.setBounds(80,160,80,25);
+        panel.add(thirds);
+
+        JLabel preciseNumber = new JLabel("35x");
+        preciseNumber.setFont(font);
+        preciseNumber.setBounds(665,160,80,25);
+        panel.add(preciseNumber);
+
+        preciseNumberBet = new JTextArea();
+        preciseNumberBet.setFont(font);
+        preciseNumberBet.setBounds(665,200,30,30);
+        panel.add(preciseNumberBet);
+
+        outcome = new JLabel("");
+        outcome.setFont(font);
+        outcome.setBounds(445,520,250,25);
+        panel.add(outcome);
+
+        ImageIcon boardImage =new ImageIcon(Objects.requireNonNull(Main.class.getResource("board.png")));
+        JLabel imageLabel = new JLabel(boardImage);
+        imageLabel.setBounds(180, 160, 400,211);
+        panel.add(imageLabel);
+
+        String[] board = new String[]{"green","red","black","red","black","red","black","red","black","red","black","black","red","black","red","black","red","black","red","red","black","red","black","red","black","red","black","red","black","black","red","black","red","black","red","black","red"};
+
+        result = new JLabel("Result: ");
+        result.setFont(font);
+        result.setBounds(170,520,200,25);
+        panel.add(result);
+
+        credits = new JLabel("Credits: " + balance);
+        credits.setFont(font);
+        credits.setBounds(320, 30, 200,25);
+        panel.add(credits);
+
+        placedBet = new JLabel("Placed bet: " + bet);
+        placedBet.setFont(font);
+        placedBet.setBounds(320, 60, 200,25);
+        panel.add(placedBet);
+
+        JButton resetCredits = new JButton("Reset Credits");
+        resetCredits.setBounds(600,400,150,25);
+        resetCredits.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                balance=500;
+                credits.setText("Credits: " + balance);
+            }
+        });
+        panel.add(resetCredits);
+
+        JButton allInButton = new JButton("All In!");
+        allInButton.setFont(font);
+        allInButton.setBounds(520,50,150,25);
+        allInButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                bet +=balance;
+                    balance =0;
+                    addCreditsToBet(placedBet,credits);
+            }
+        });
+        panel.add(allInButton);
+
+        JButton resetBetButton = new JButton("Reset Bet");
+        resetBetButton.setFont(font);
+        resetBetButton.setBounds(100,50,150,25);
+        resetBetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                balance +=bet;
+                bet =0;
+                addCreditsToBet(placedBet,credits);
+            }
+        });
+        panel.add(resetBetButton);
+
+
+        JButton bet5Button = new JButton("$5");
+        bet5Button.setFont(font);
+        bet5Button.setBounds(150,100,85,25);
+        bet5Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(validBalance(balance,5)){
+                    balance -=5;
+                    bet +=5;
+                    addCreditsToBet(placedBet,credits);
+                }
+            }
+        });
+        panel.add(bet5Button);
+
+        JButton bet10Button = new JButton("$10");
+        bet10Button.setFont(font);
+        bet10Button.setBounds(250,100,85,25);
+        bet10Button.setForeground(Color.white);
+        Color greenChip = new Color(14,202,84);
+        bet10Button.setBackground(greenChip);
+        bet10Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(validBalance(balance,10)){
+                    balance -=10;
+                    bet +=10;
+                    addCreditsToBet(placedBet,credits);
+                }
+            }
+        });
+        panel.add(bet10Button);
+
+        JButton bet25Button = new JButton("$25");
+        bet25Button.setFont(font);
+        bet25Button.setBounds(350,100,85,25);
+        bet25Button.setForeground(Color.white);
+        bet25Button.setBackground(Color.blue);
+        bet25Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(validBalance(balance,25)){
+                    balance -=25;
+                    bet +=25;
+                    addCreditsToBet(placedBet,credits);
+                }
+            }
+        });
+        panel.add(bet25Button);
+
+        JButton bet50Button = new JButton("$50");
+        bet50Button.setFont(font);
+        bet50Button.setBounds(450,100,85,25);
+        bet50Button.setForeground(Color.white);
+        bet50Button.setBackground(Color.red);
+        bet50Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(validBalance(balance,50)){
+                    balance -=50;
+                    bet +=50;
+                    addCreditsToBet(placedBet,credits);
+                }
+            }
+        });
+        panel.add(bet50Button);
+
+        JButton bet100Button = new JButton("$100");
+        bet100Button.setFont(font);
+        bet100Button.setBounds(550,100,85,25);
+        bet100Button.setBackground(Color.darkGray);
+        bet100Button.setForeground(Color.white);
+        bet100Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(validBalance(balance,100)){
+                    balance -=100;
+                    bet +=100;
+                    addCreditsToBet(placedBet,credits);
+                }
+            }
+        });
+        panel.add(bet100Button);
+
+        JButton greenBet = new JButton("35x");
+        greenBet.setBounds(350,385,75,75);
+        greenBet.setFont(font);
+        greenBet.setBackground(Color.green);
+        greenBet.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                rolledNumber=rollANumber(board);
+                displayResult(rolledNumber,board);
+                if(board[rolledNumber].equals("green")){
+                    youWinMessage(bet*35,outcome);
+                    balance += bet*35;
+                    credits.setText("Credits: "+ balance);
+                }
+                else youLostMessage(bet,outcome);
+                bet=0;
+                placedBet.setText("Placed bet: " + bet);
+            }
+        });
+        panel.add(greenBet);
+
+        JButton redBet = new JButton("2x");
+        redBet.setBounds(250,385,75,75);
+        redBet.setFont(font);
+        redBet.setBackground(Color.red);
+        redBet.addActionListener(new ActionListener() {
+            @Override
+
+            public void actionPerformed(ActionEvent e) {
+                rolledNumber=rollANumber(board);
+                displayResult(rolledNumber,board);
+                if(board[rolledNumber].equals("red")){
+                    youWinMessage(bet*2,outcome);
+                    balance += bet*2;
+                    credits.setText("Credits: "+ balance);
+                }
+                else youLostMessage(bet,outcome);
+                bet=0;
+                placedBet.setText("Placed bet: " + bet);
+            }
+        });
+        panel.add(redBet);
+
+        JButton blackBet = new JButton("2x");
+        blackBet.setBounds(450,385,75,75);
+        blackBet.setFont(font);
+        blackBet.setBackground(Color.black);
+        blackBet.setForeground(Color.white);
+        blackBet.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                rolledNumber=rollANumber(board);
+                displayResult(rolledNumber,board);
+                if(board[rolledNumber].equals("black")){
+                    youWinMessage(bet*2,outcome);
+                    balance += bet*2;
+                    credits.setText("Credits: "+ balance);
+                }
+                else youLostMessage(bet,outcome);
+                bet=0;
+                placedBet.setText("Placed bet: " + bet);
+            }
+        });
+        panel.add(blackBet);
+
+        JButton firstOneThird = new JButton("First 12");
+        firstOneThird.setFont(font);
+        firstOneThird.setBounds(20,200,150,30);
+        firstOneThird.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                rolledNumber=rollANumber(board);
+                displayResult(rolledNumber,board);
+                if(rolledNumber>=1 && rolledNumber<=12){
+                    youWinMessage(bet*3,outcome);
+                    balance += bet*3;
+                    credits.setText("Credits: "+ balance);
+                }
+                else youLostMessage(bet,outcome);
+                bet=0;
+                placedBet.setText("Placed bet: " + bet);
+            }
+        });
+        panel.add(firstOneThird);
+
+        JButton secondOneThird = new JButton("Second 12");
+        secondOneThird.setFont(font);
+        secondOneThird.setBounds(20,240,150,30);
+        secondOneThird.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                rolledNumber=rollANumber(board);
+                displayResult(rolledNumber,board);
+                if(rolledNumber>=13 && rolledNumber<=24){
+                    youWinMessage(bet*3,outcome);
+                    balance += bet*3;
+                    credits.setText("Credits: "+ balance);
+                }
+                else youLostMessage(bet,outcome);
+                bet=0;
+                placedBet.setText("Placed bet: " + bet);
+            }
+        });
+        panel.add(secondOneThird);
+
+        JButton thirdOneThird = new JButton("Third 12");
+        thirdOneThird.setFont(font);
+        thirdOneThird.setBounds(20,280,150,30);
+        thirdOneThird.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                rolledNumber=rollANumber(board);
+                displayResult(rolledNumber,board);
+                if(rolledNumber>=23 && rolledNumber<=36){
+                    youWinMessage(bet*3,outcome);
+                    balance += bet*3;
+                    credits.setText("Credits: "+ balance);
+                }
+                else youLostMessage(bet,outcome);
+                bet=0;
+                placedBet.setText("Placed bet: " + bet);
+            }
+        });
+        panel.add(thirdOneThird);
+
+        JButton preciseNumberButton = new JButton("Bet on number");
+        preciseNumberButton.setFont(preciseNumberButton.getFont().deriveFont(16.0f));
+        preciseNumberButton.setBounds(600,250,160,30);
+        preciseNumberButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                rolledNumber=rollANumber(board);
+                displayResult(rolledNumber,board);
+                String stringChosenNumber = preciseNumberBet.getText();
+                int chosenNumber;
+                if(isValidInput(stringChosenNumber)){
+                    if(Integer.parseInt(stringChosenNumber)>=0 && Integer.parseInt(stringChosenNumber)<=36){
+                        chosenNumber = Integer.parseInt(stringChosenNumber);
+                        if(chosenNumber==rolledNumber){
+                            youWinMessage(bet*35,outcome);
+                            balance += bet*35;
+                            credits.setText("Credits: "+ balance);
+                        }else youLostMessage(bet,outcome);
+                        bet=0;
+                        placedBet.setText("Placed bet: " + bet);
+                    }
+                }
+                preciseNumberBet.setText("");
+            }
+        });
+        panel.add(preciseNumberButton);
+
+        Color darkGreen = new Color(22,142,67);
+        panel.setBackground(darkGreen);
+        frame.setVisible(true);
+    }
+
+    private static boolean isValidInput(String stringChosenNumber) {
+        return (stringChosenNumber.matches("[0-9]+") && stringChosenNumber.length() > 0);
+    }
+
+    private static void youLostMessage(int bet, JLabel outcome) {
+        outcome.setText("YOU LOST $"+ bet);
+    }
+
+    private static void youWinMessage(int i, JLabel outcome) {
+       outcome.setText("YOU WIN $" + i);
+    }
+
+    private static void displayResult(int rolledNumber,String[] board) {
+        result.setText("Result: " + rolledNumber + " " + board[rolledNumber]);
+    }
+
+    private static int rollANumber(String[] board) {
+        Random random = new Random();
+        int rollNumber;
+            rollNumber= random.nextInt(37);
+            roulette.setText(String.valueOf(rollNumber));
+            String color =  board[rollNumber];
+                    if(color.equals("red")){
+                        roulette.setBackground(Color.RED);
+                    }
+                    if(color.equals("black")){
+                        roulette.setForeground(Color.WHITE);
+                        roulette.setBackground(Color.BLACK);
+                    }
+                    if(color.equals("green")) roulette.setBackground(Color.GREEN);
+
+        return rollNumber;
+    }
+    private static void addCreditsToBet(JLabel placedBet, JLabel credits) {
+        placedBet.setText("Placed bet: " + bet);
+        credits.setText("Credits: "+ balance);
+    }
+
+    private static boolean validBalance(int balance, int bet) {
+        return(balance>=bet);
+    }
+}
