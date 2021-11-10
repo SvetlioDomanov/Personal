@@ -1,0 +1,42 @@
+package com.company;
+
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int bankResource = 15000;
+        int depositByTwoClients =500;
+
+        int years = Integer.parseInt(scanner.nextLine());
+
+        int numberOfClients=3;
+        int yearCounter =0;
+        boolean creditIsPaused = false;
+
+        for(int year=1;year<=years;year++){
+            for(int month =1; month<=12;month++){
+                if(bankResource<=5000 && !creditIsPaused) {
+                numberOfClients=1;
+                yearCounter = 0;
+                creditIsPaused = true;
+                }
+                if(creditIsPaused){
+                    if(yearCounter==12){
+                        creditIsPaused=false;
+                        numberOfClients=3;
+                    }
+                    yearCounter++;
+                }
+                bankResource -= creditClients(numberOfClients);
+                bankResource += depositByTwoClients;
+                System.out.printf("Bank Resource in month %d, year %d: %d\n",month,year,bankResource);
+            }
+        }
+    }
+    private static int creditClients(int numberOfClients) {
+        return numberOfClients*500;
+    }
+}
